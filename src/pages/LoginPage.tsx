@@ -105,12 +105,13 @@ export const LoginPage = () => {
     setLoading(true);
     try {
       const response = await authService.verifyOtp(phone, otp);
+      const user = response.fetchedUser || response.user;
       setAuth(
         {
-          id: response.user?.id || '',
+          id: user?.id || '',
           phone: phone,
-          name: response.user?.name,
-          email: response.user?.email,
+          name: user?.name,
+          email: user?.email,
         },
         response.token
       );

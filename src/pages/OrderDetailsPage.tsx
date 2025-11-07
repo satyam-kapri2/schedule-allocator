@@ -235,7 +235,7 @@ export const OrderDetailsPage = () => {
 
       const data = await partnerService.findAvailablePartners({
         slotsData,
-        minAvailabilityPercentage: 100 - tolerance,
+        threshold: 100 - tolerance,
       });
 
       setAvailablePartners(data.availablePartners || []);

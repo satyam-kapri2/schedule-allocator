@@ -87,8 +87,8 @@ export const OrdersPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const data = await orderService.getAllOrders();
-      setOrders(data.data || []);
+      const response = await orderService.getAllOrders();
+      setOrders(response.orders || []);
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to fetch orders');
     } finally {
@@ -125,15 +125,15 @@ export const OrdersPage = () => {
             <tbody>
               {orders.map((order) => (
                 <Tr key={order.id} onClick={() => handleOrderClick(order.id)}>
-                  <Td>{order.id}</Td>
-                  <Td>{order.customer_name || 'N/A'}</Td>
-                  <Td>{order.service_name || 'N/A'}</Td>
+                  <Td>{order.number || order.id}</Td>
+                  <Td>{order.user?.name || 'N/A'}</Td>
+                  <Td>{order.orderItems?.[0]?.Package?.service?.name || 'N/A'}</Td>
                   <Td>
-                    <StatusBadge $status={order.status}>
-                      {order.status || 'pending'}
+                    <StatusBadge $status={order.status?.toLowerCase() || 'pending'}>
+                      {order.status || 'PENDING'}
                     </StatusBadge>
                   </Td>
-                  <Td>{order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}</Td>
+                  <Td>{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</Td>
                 </Tr>
               ))}
             </tbody>

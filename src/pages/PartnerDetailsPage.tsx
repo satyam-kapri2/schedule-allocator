@@ -119,14 +119,14 @@ export const PartnerDetailsPage = () => {
       const [partnerData, profileData, schedulesData, documentsData] = await Promise.all([
         partnerService.getPartnerById(partnerId!),
         partnerService.getPartnerPublicProfile(partnerId!).catch(() => null),
-        partnerService.getPartnerSchedules(partnerId!).catch(() => ({ data: [] })),
-        partnerService.getPartnerDocuments(partnerId!).catch(() => ({ data: [] })),
+        partnerService.getPartnerSchedules(partnerId!).catch(() => ({ schedules: [] })),
+        partnerService.getPartnerDocuments(partnerId!).catch(() => ({ documents: [] })),
       ]);
 
-      setPartner(partnerData.data || partnerData);
-      setPublicProfile(profileData?.data || profileData);
-      setSchedules(schedulesData.data || []);
-      setDocuments(documentsData.data || []);
+      setPartner(partnerData);
+      setPublicProfile(profileData);
+      setSchedules(schedulesData.schedules || []);
+      setDocuments(documentsData.documents || []);
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to fetch partner details');
     } finally {
@@ -172,15 +172,15 @@ export const PartnerDetailsPage = () => {
             </DetailItem>
             <DetailItem>
               <Label>Name</Label>
-              <Value>{partner?.name || 'N/A'}</Value>
+              <Value>{partner?.user?.name || 'N/A'}</Value>
             </DetailItem>
             <DetailItem>
               <Label>Email</Label>
-              <Value>{partner?.email || 'N/A'}</Value>
+              <Value>{partner?.user?.email || 'N/A'}</Value>
             </DetailItem>
             <DetailItem>
               <Label>Phone</Label>
-              <Value>{partner?.phone || partner?.phoneNumber || 'N/A'}</Value>
+              <Value>{partner?.user?.phoneNumber || 'N/A'}</Value>
             </DetailItem>
             <DetailItem>
               <Label>Status</Label>
@@ -298,10 +298,10 @@ export const PartnerDetailsPage = () => {
             <tbody>
               {documents.map((doc) => (
                 <tr key={doc.id}>
-                  <Td>{doc.type || doc.documentType || 'Document'}</Td>
+                  <Td>{doc.type || 'Document'}</Td>
                   <Td>
-                    <StatusBadge $verified={doc.verified || doc.status === 'verified'}>
-                      {doc.verified || doc.status === 'verified' ? 'Verified' : 'Pending'}
+                    <StatusBadge $verified={doc.status === 'VERIFIED'}>
+                      {doc.status || 'PENDING'}
                     </StatusBadge>
                   </Td>
                   <Td>{doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : 'N/A'}</Td>
@@ -309,7 +309,7 @@ export const PartnerDetailsPage = () => {
                     <Button onClick={() => toast('View document functionality coming soon')}>
                       View
                     </Button>
-                    {!(doc.verified || doc.status === 'verified') && (
+                    {doc.status !== 'VERIFIED' && (
                       <Button 
                         onClick={() => toast('Verify functionality coming soon')}
                         style={{ marginLeft: '0.5rem', backgroundColor: '#10b981' }}

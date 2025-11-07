@@ -67,8 +67,8 @@ export const PartnersPage = () => {
 
   const fetchPartners = async () => {
     try {
-      const data = await partnerService.getAllPartners();
-      setPartners(data.data || []);
+      const response = await partnerService.getAllPartners();
+      setPartners(response.partners || []);
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to fetch partners');
     } finally {
@@ -106,10 +106,10 @@ export const PartnersPage = () => {
               {partners.map((partner) => (
                 <Tr key={partner.id} onClick={() => handlePartnerClick(partner.id)}>
                   <Td>{partner.id}</Td>
-                  <Td>{partner.name || 'N/A'}</Td>
-                  <Td>{partner.email || 'N/A'}</Td>
-                  <Td>{partner.phone || 'N/A'}</Td>
-                  <Td>{partner.status || 'active'}</Td>
+                  <Td>{partner.user?.name || 'N/A'}</Td>
+                  <Td>{partner.user?.email || 'N/A'}</Td>
+                  <Td>{partner.user?.phoneNumber || 'N/A'}</Td>
+                  <Td>{partner.status || 'PENDING'}</Td>
                 </Tr>
               ))}
             </tbody>
